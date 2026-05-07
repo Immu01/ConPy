@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ConPy</title>
     <style>
         /* Base page styling */
@@ -14,16 +14,26 @@
             width: 100vw;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* FIX: Prevents word selection on touch/click */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            /* FIX: Prevents mobile browsers from auto-scaling text */
+            -webkit-text-size-adjust: 100%;
         }
 
         /* --- SCREEN 1: THE ENVELOPE DROP --- */
         #envelope-stage {
-            height: 100%;
+            position: absolute;
             width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
             z-index: 10;
         }
 
@@ -38,7 +48,7 @@
         }
 
         .mail-wrapper.opened {
-            transform: scale(30) rotate(-10deg) !important; 
+            transform: scale(40) rotate(-10deg) !important; 
             opacity: 0;
             pointer-events: none; 
         }
@@ -59,9 +69,7 @@
         .envelope::before {
             content: ''; position: absolute; top: 0; left: 0;
             border-top: 90px solid transparent; border-bottom: 90px solid #ececec;
-            border-left: 140px solid transparent; border-right: 140px solid transparent;
-            border-left-width: 140px; border-left-style: solid; border-left-color: #e0e0e0;
-            border-right-width: 140px; border-right-style: solid; border-right-color: #e0e0e0;
+            border-left: 140px solid #e0e0e0; border-right: 140px solid #e0e0e0;
             z-index: 1;
         }
 
@@ -81,6 +89,8 @@
             outline: none; opacity: 0; transform: scale(0.8);
             animation: revealButton 0.8s ease-out 2.5s forwards;
             transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s ease;
+            /* Ensure button doesn't show tap highlight on mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .open-btn:hover { transform: scale(1.1); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
@@ -90,55 +100,34 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #E0B0FF; 
             display: flex; justify-content: center; align-items: center;
-            z-index: -1; 
-            opacity: 0; visibility: hidden;
+            z-index: -1; opacity: 0; visibility: hidden;
             transition: opacity 0.5s ease;
         }
 
-        #message-stage.active {
-            z-index: 100;
-            opacity: 1;
-            visibility: visible;
-        }
+        #message-stage.active { z-index: 100; opacity: 1; visibility: visible; }
 
         #typing-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            padding: 0 20px;
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; padding: 0 20px; box-sizing: border-box;
         }
 
         #typing-text {
             color: #4a235a; 
             font-family: 'Daniel', 'Segoe Print', 'Bradley Hand', cursive; 
-            font-size: 42px; 
+            font-size: clamp(24px, 8vw, 42px); /* FIX: Responsive font size for mobile */
             font-weight: normal;
             text-align: center;
             margin: 0;
-            line-height: 1.5;
-            /* Preserves exact spacing to prevent jumps */
+            line-height: 1.4;
             white-space: pre-wrap; 
         }
 
-        /* Fading Words Animation (Removed margins to prevent layout shift) */
-        .fade-word {
-            display: inline-block;
-            opacity: 1;
-            color: #4a235a;
-            will-change: opacity, color;
-        }
+        .fade-word { display: inline-block; opacity: 1; color: #4a235a; will-change: opacity, color; }
 
         /* --- Keyframes --- */
         @keyframes dropIn { 0% { transform: translateY(-120vh) rotate(-720deg); } 100% { transform: translateY(0) rotate(-6deg); } }
         @keyframes revealButton { to { opacity: 1; transform: scale(1); } }
-
-        @keyframes dissolveFade {
-            to {
-                opacity: 0;
-                color: #E0B0FF; 
-            }
-        }
+        @keyframes dissolveFade { to { opacity: 0; color: #E0B0FF; } }
     </style>
 </head>
 <body>
@@ -164,10 +153,9 @@
         const messageStage = document.getElementById('message-stage');
         const typingTextH1 = document.getElementById('typing-text');
 
-        // Text & Timing Configuration
         const textToType = "There is something special for you";
-        const typingSpeed = 80; // milliseconds per letter
-        const holdMessageTime = 1500; // time to stay on screen before fading
+        const typingSpeed = 80; 
+        const holdMessageTime = 1500; 
         let charIndex = 0;
 
         openBtn.addEventListener('click', () => {
@@ -177,52 +165,40 @@
 
             mailWrapper.classList.add('opened');
 
-            // Wait 1.5s for the envelope to zoom out
             setTimeout(() => {
                 envelopeStage.style.display = 'none'; 
                 messageStage.classList.add('active'); 
-                
-                // Start typing half a second after background appears
                 setTimeout(typeWriter, 500);
-
             }, 1500);
         });
 
         function typeWriter() {
             if (charIndex < textToType.length) {
-                // Type the next character (No cursor line anymore)
                 typingTextH1.textContent += textToType.charAt(charIndex);
                 charIndex++;
                 setTimeout(typeWriter, typingSpeed);
             } else {
-                // Typing is complete. Wait, then start the fade out.
                 setTimeout(fadeSentenceAway, holdMessageTime);
             }
         }
 
         function fadeSentenceAway() {
             const wordsArray = textToType.split(' ');
-            typingTextH1.innerHTML = ''; // Clear text to rebuild it with spans perfectly
+            typingTextH1.innerHTML = ''; 
 
             wordsArray.forEach((word, index) => {
-                // Create span for the word
                 const wordSpan = document.createElement('span');
                 wordSpan.textContent = word; 
                 wordSpan.className = 'fade-word';
-
-                // Stagger the fade out by 0.25 seconds per word
                 const cascadeDelay = index * 0.25;
                 wordSpan.style.animation = `dissolveFade 1.5s ease-in-out ${cascadeDelay}s forwards`;
-
                 typingTextH1.appendChild(wordSpan);
 
-                // Re-insert standard spaces between words to maintain exact width
                 if (index < wordsArray.length - 1) {
                     typingTextH1.appendChild(document.createTextNode(' '));
                 }
             });
         }
     </script>
-
 </body>
 </html>
