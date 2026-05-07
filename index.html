@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ConPy</title>
+    <title>ConPy - A Special Message</title>
     <style>
         /* Base page styling */
         body {
-            background-color: #E0B0FF; /* Soft Lilac */
+            background-color: #E0B0FF;
             margin: 0;
             padding: 0;
             height: 100vh;
             width: 100vw;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden; 
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,21 +39,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: dropIn 2.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; 
-            transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1), 
-                        opacity 0.8s ease-out;
+            animation: dropIn 2.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+            transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.8s ease-out;
             will-change: transform, opacity;
         }
 
-        /* State triggered on click */
         .mail-wrapper.opened {
-            /* Default zoom for laptops */
-            transform: scale(30) rotate(-10deg) !important; 
+            transform: scale(30) rotate(-10deg) !important;
             opacity: 0;
-            pointer-events: none; 
+            pointer-events: none;
         }
 
-        /* FIX: Smaller zoom scale specifically for mobile devices */
         @media (max-width: 600px) {
             .mail-wrapper.opened {
                 transform: scale(12) rotate(-5deg) !important;
@@ -67,73 +63,269 @@
             position: relative;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
             border-radius: 16px;
-            overflow: hidden; 
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .envelope::before {
-            content: ''; position: absolute; top: 0; left: 0;
-            border-top: 90px solid transparent; border-bottom: 90px solid #ececec;
-            border-left: 140px solid #e0e0e0; border-right: 140px solid #e0e0e0;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-top: 90px solid transparent;
+            border-bottom: 90px solid #ececec;
+            border-left: 140px solid #e0e0e0;
+            border-right: 140px solid #e0e0e0;
             z-index: 1;
         }
 
         .envelope::after {
-            content: ''; position: absolute; top: 0; left: 0;
-            border-top: 90px solid #d4d4d4; border-bottom: 90px solid transparent;
-            border-left: 140px solid transparent; border-right: 140px solid transparent;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-top: 90px solid #d4d4d4;
+            border-bottom: 90px solid transparent;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
             z-index: 2;
         }
 
         .open-btn {
-            position: relative; z-index: 10; padding: 12px 40px;
-            background-color: #ffffff; color: #4a235a;
-            border: none; border-radius: 30px;
-            font-size: 16px; font-weight: 700; letter-spacing: 1px;
-            cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            outline: none; opacity: 0; transform: scale(0.8);
+            position: relative;
+            z-index: 10;
+            padding: 12px 40px;
+            background-color: #ffffff;
+            color: #4a235a;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            outline: none;
+            opacity: 0;
+            transform: scale(0.8);
             animation: revealButton 0.8s ease-out 2.5s forwards;
             transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .open-btn:hover { transform: scale(1.1); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+        .open-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
 
-        /* --- SCREEN 2: THE MESSAGE STAGE --- */
+        /* --- SCREEN 2: THE FIRST MESSAGE (TYPER) --- */
         #message-stage {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #E0B0FF; 
-            display: flex; justify-content: center; align-items: center;
-            z-index: -1; opacity: 0; visibility: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #E0B0FF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: -1;
+            opacity: 0;
+            visibility: hidden;
             transition: opacity 0.5s ease;
         }
 
-        #message-stage.active { z-index: 100; opacity: 1; visibility: visible; }
+        #message-stage.active {
+            z-index: 100;
+            opacity: 1;
+            visibility: visible;
+        }
 
         #typing-container {
-            display: flex; justify-content: center; align-items: center;
-            width: 100%; padding: 0 20px; box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
 
         #typing-text {
-            color: #4a235a; 
-            font-family: 'Daniel', 'Segoe Print', 'Bradley Hand', cursive; 
-            font-size: clamp(24px, 8vw, 42px); 
+            color: #4a235a;
+            font-family: 'Daniel', 'Segoe Print', 'Bradley Hand', cursive;
+            font-size: clamp(24px, 8vw, 42px);
             font-weight: normal;
             text-align: center;
             margin: 0;
             line-height: 1.4;
-            white-space: pre-wrap; 
+            white-space: pre-wrap;
         }
 
-        .fade-word { display: inline-block; opacity: 1; color: #4a235a; will-change: opacity, color; }
+        .fade-word {
+            display: inline-block;
+            opacity: 1;
+            color: #4a235a;
+            will-change: opacity, color;
+        }
 
-        /* --- Keyframes --- */
-        @keyframes dropIn { 0% { transform: translateY(-120vh) rotate(-720deg); } 100% { transform: translateY(0) rotate(-6deg); } }
-        @keyframes revealButton { to { opacity: 1; transform: scale(1); } }
-        @keyframes dissolveFade { to { opacity: 0; color: #E0B0FF; } }
+        /* --- SCREEN 3: THE LONG LETTER (AUTO-SCROLL) --- */
+        #letter-stage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #E0B0FF 0%, #c896e6 100%);
+            z-index: -1;
+            opacity: 0;
+            visibility: hidden;
+            overflow: hidden;
+            transition: opacity 0.8s ease;
+        }
+
+        #letter-stage.active {
+            z-index: 200;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        .letter-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 25px 100px 25px;
+            box-sizing: border-box;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: clamp(16px, 4.5vw, 20px);
+            line-height: 1.8;
+            color: #2c1a3a;
+            text-align: justify;
+            background: transparent;
+            pointer-events: none;
+            transform: translateY(100%);
+            transition: transform 0.05s linear;
+        }
+
+        .letter-content p {
+            margin-bottom: 20px;
+            text-indent: 2em;
+        }
+
+        .letter-content strong {
+            color: #8b3a62;
+            font-size: 1.1em;
+        }
+
+        /* Celebration overlay */
+        #celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+            background: rgba(224, 176, 255, 0.95);
+        }
+
+        #celebration-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .birthday-message {
+            font-family: 'Daniel', 'Segoe Print', cursive;
+            font-size: clamp(32px, 10vw, 64px);
+            color: #ff1493;
+            text-shadow: 3px 3px 10px rgba(255, 20, 147, 0.3);
+            text-align: center;
+            animation: bounce 0.8s ease-out;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .cat-emoji {
+            font-size: 60px;
+            animation: float 2s ease-in-out infinite;
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background: linear-gradient(135deg, #ffd700, #ff69b4, #00ced1, #ff4500);
+            top: -20px;
+            animation: fall linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes dropIn {
+            0% { transform: translateY(-120vh) rotate(-720deg); }
+            100% { transform: translateY(0) rotate(-6deg); }
+        }
+
+        @keyframes revealButton {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes dissolveFade {
+            to { opacity: 0; color: #E0B0FF; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Touch indicator */
+        .touch-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-family: monospace;
+            z-index: 250;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -152,18 +344,73 @@
         </div>
     </div>
 
+    <div id="letter-stage">
+        <div class="scroll-container" id="scrollContainer">
+            <div class="letter-content" id="letterContent">
+                <p><strong>Hey Daffe</strong></p>
+                <p>I am very glad to have a person like you in my life. We have been through all the different stages—the many ups and downs. There were days where I lost trust and hated you a lot due to some incidents that happened. I am not sure why that happens or why you did such things, and I am sorry if I made you sad about this. I didn't mean to make you feel bad by telling you such things.</p>
+                <p>You are magic that happened to me. Because of you, I have changed a lot; you didn't just change my life, you gave it a direction I never knew I needed. There are many reasons why you made me who I am today. Maybe you are not next to me, but I feel you around me every single time. I used to think about you a lot, and the only thing that happens is a smile on my face. You were the person who taught me what it truly means to care for someone more than myself. I have never been with a woman before you, and obviously, I will not be after you. You are the only person I have ever truly been in love with.</p>
+                <p>I've realized that no matter how many people I meet, nobody carries the same light or understands the language of my soul the way you do. There were times when we used to have no conversation, and I would overthink things and feel very bad—yet, the feelings I have for you healed me and helped me overcome them. You are the silent motivation behind my hard work; I want to be the best version of myself because that is what you deserve.</p>
+                <p>I respect you a lot. I treat you really well, I never made you cry, and I have never done anything wrong or intentional against you. I always wanted things to be in a healthy way. It has been almost 14 years of this relationship. Fourteen is more than just a number; it is a lifetime of memories that I carry with me every day. I have been very honest and loyal to you from day one, and I will still be in love with you until my last breath.</p>
+                <p>You are really a light for me; perhaps because of you, I have not chosen any wrong ways. I always wish for four things: that my family is healthy and happy, that I have a nice and good job, that I have you as my wife for the rest of my life, and that you are happy wherever you are. I don't just want you in my life; I want to be the person who makes your life easier and your smiles brighter.</p>
+                <p>The things I always imagine and wish for are waking up with you next to me, and you, me, and our family living together happily. There were only very few times when I was really angry with you; for the rest, I always love you. You don't know even a bit of what you are in my life.</p>
+                <p>We are not sure what the future is going to be. I feel my tears stuck in my eyes as I am writing this. Daffe, if there is something called a second life, please find me. I really want you. I have never loved anyone else; the only person I know is you. Daffe—my Buddu, my best friend, my caretaker, my love, my sweetheart, my everything. I wish for your happiness, and I still have hope Daffe that you will still be my person.</p>
+                <p>Sorry for every wrong things that I have done, Sorry for my absence when you need me</p>
+                <p><strong>I love you so much Habeeba Fatima</strong></p>
+                <p>I still don't know how you manage to be cute, annoying, caring, dramatic, and perfect all at the same time. The simple conversations and silly fights somehow become my favorite memories. No matter how far we are, you always make my heart feel close to you. Thank you for being my peace, my happiness, and the reason behind so many random smiles.</p>
+            </div>
+        </div>
+        <div class="touch-indicator" id="touchIndicator">✨ Touch & hold to pause ✨</div>
+    </div>
+
+    <div id="celebration-overlay">
+        <div class="birthday-message">
+            🎂 Happy Birthday to You <span style="color:#ff69b4;">Habeeba</span> 🎂
+        </div>
+        <div>
+            <span class="cat-emoji">🐱</span>
+            <span class="cat-emoji">🐈</span>
+            <span class="cat-emoji">😺</span>
+            <span class="cat-emoji">🐈‍⬛</span>
+            <span class="cat-emoji">🐱</span>
+        </div>
+        <div style="margin-top: 30px; font-size: 40px;">🎉🎈🎁🎊✨</div>
+    </div>
+
     <script>
         const openBtn = document.getElementById('openBtn');
         const mailWrapper = document.getElementById('mailWrapper');
         const envelopeStage = document.getElementById('envelope-stage');
         const messageStage = document.getElementById('message-stage');
         const typingTextH1 = document.getElementById('typing-text');
+        const letterStage = document.getElementById('letter-stage');
+        const letterContent = document.getElementById('letterContent');
+        const scrollContainer = document.getElementById('scrollContainer');
+        const touchIndicator = document.getElementById('touchIndicator');
+        const celebrationOverlay = document.getElementById('celebration-overlay');
 
         const textToType = "There is something special for you";
-        const typingSpeed = 80; 
-        const holdMessageTime = 1500; 
+        const typingSpeed = 80;
+        const holdMessageTime = 1500;
         let charIndex = 0;
 
+        // Auto-scroll variables
+        let scrollPosition = 100; // Start at bottom (100% means fully at bottom, content hidden)
+        let isPaused = false;
+        let animationFrameId = null;
+        let isScrolling = true;
+        let scrollSpeed = 0.35; // pixels per frame (~60fps = 21px/sec, comfortable reading speed)
+        
+        // Get total scrollable height
+        let contentHeight = 0;
+        let containerHeight = 0;
+        let maxScroll = 0;
+
+        // Touch handling
+        let touchStartY = 0;
+        let isTouching = false;
+
+        // OPEN BUTTON CLICK HANDLER
         openBtn.addEventListener('click', () => {
             const docElm = document.documentElement;
             if (docElm.requestFullscreen) docElm.requestFullscreen();
@@ -172,12 +419,13 @@
             mailWrapper.classList.add('opened');
 
             setTimeout(() => {
-                envelopeStage.style.display = 'none'; 
-                messageStage.classList.add('active'); 
+                envelopeStage.style.display = 'none';
+                messageStage.classList.add('active');
                 setTimeout(typeWriter, 500);
-            }, 1200); // Slightly faster transition
+            }, 1200);
         });
 
+        // TYPEWRITER FUNCTION
         function typeWriter() {
             if (charIndex < textToType.length) {
                 typingTextH1.textContent += textToType.charAt(charIndex);
@@ -188,13 +436,14 @@
             }
         }
 
+        // FADE FIRST MESSAGE
         function fadeSentenceAway() {
             const wordsArray = textToType.split(' ');
-            typingTextH1.innerHTML = ''; 
+            typingTextH1.innerHTML = '';
 
             wordsArray.forEach((word, index) => {
                 const wordSpan = document.createElement('span');
-                wordSpan.textContent = word; 
+                wordSpan.textContent = word;
                 wordSpan.className = 'fade-word';
                 const cascadeDelay = index * 0.25;
                 wordSpan.style.animation = `dissolveFade 1.5s ease-in-out ${cascadeDelay}s forwards`;
@@ -204,7 +453,270 @@
                     typingTextH1.appendChild(document.createTextNode(' '));
                 }
             });
+
+            // After fade completes, transition to letter
+            setTimeout(() => {
+                messageStage.classList.remove('active');
+                setTimeout(() => {
+                    initializeLetterStage();
+                }, 300);
+            }, 2000);
         }
+
+        // INITIALIZE THE LONG LETTER WITH AUTO-SCROLL
+        function initializeLetterStage() {
+            letterStage.classList.add('active');
+            
+            // Force reflow to get accurate dimensions
+            setTimeout(() => {
+                updateDimensions();
+                
+                // Set initial position (bottom, hidden)
+                letterContent.style.transform = `translateY(100%)`;
+                scrollPosition = 100;
+                
+                // Start auto-scroll after a small delay
+                setTimeout(() => {
+                    startAutoScroll();
+                    touchIndicator.style.opacity = '0.8';
+                    setTimeout(() => {
+                        if (touchIndicator.style.opacity === '0.8') {
+                            touchIndicator.style.opacity = '0';
+                        }
+                    }, 3000);
+                }, 500);
+            }, 100);
+        }
+
+        function updateDimensions() {
+            contentHeight = letterContent.scrollHeight;
+            containerHeight = scrollContainer.clientHeight;
+            maxScroll = contentHeight - containerHeight;
+        }
+
+        function updateScrollPosition() {
+            if (!isScrolling || isPaused) return;
+            
+            // Move from bottom to top: decrease translateY percentage
+            // Start at 100% (completely below viewport), end at -100% (completely above)
+            // Actually we want: 100% (bottom edge at container bottom) to -maxScrollPercent%
+            
+            let newScrollPercent = scrollPosition - scrollSpeed;
+            
+            if (newScrollPercent <= -maxScroll) {
+                // Scrolling complete
+                newScrollPercent = -maxScroll;
+                scrollPosition = newScrollPercent;
+                updateScrollTransform();
+                finishLetterAndCelebrate();
+                return;
+            }
+            
+            scrollPosition = newScrollPercent;
+            updateScrollTransform();
+            
+            animationFrameId = requestAnimationFrame(updateScrollPosition);
+        }
+        
+        let calculatedMaxPercent = 0;
+        
+        function updateScrollTransform() {
+            // Convert scroll progress to translateY percentage
+            // When scrollPosition = 100 (start) -> translateY(100%) [hidden below]
+            // When scrollPosition = -maxScrollPercent (end) -> translateY(-maxScrollPercent%) [hidden above]
+            letterContent.style.transform = `translateY(${scrollPosition}%)`;
+        }
+        
+        function calculateMaxScrollPercent() {
+            const contentH = letterContent.scrollHeight;
+            const containerH = scrollContainer.clientHeight;
+            const totalScrollPx = contentH - containerH;
+            // Convert px to percentage relative to content height
+            if (contentH <= 0) return 100;
+            const percent = (totalScrollPx / contentH) * 100;
+            return Math.min(200, percent);
+        }
+        
+        let maxScrollPercent = 0;
+        
+        function startAutoScroll() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            
+            // Reset scroll position
+            scrollPosition = 100;
+            updateScrollTransform();
+            
+            maxScrollPercent = calculateMaxScrollPercent();
+            maxScroll = maxScrollPercent;
+            
+            isScrolling = true;
+            isPaused = false;
+            
+            function scrollStep() {
+                if (!isScrolling || isPaused) {
+                    animationFrameId = requestAnimationFrame(scrollStep);
+                    return;
+                }
+                
+                let newPos = scrollPosition - scrollSpeed;
+                
+                if (newPos <= -maxScrollPercent) {
+                    newPos = -maxScrollPercent;
+                    scrollPosition = newPos;
+                    updateScrollTransform();
+                    finishLetterAndCelebrate();
+                    return;
+                }
+                
+                scrollPosition = newPos;
+                updateScrollTransform();
+                animationFrameId = requestAnimationFrame(scrollStep);
+            }
+            
+            animationFrameId = requestAnimationFrame(scrollStep);
+        }
+        
+        function pauseAutoScroll() {
+            if (!isScrolling) return;
+            isPaused = true;
+            touchIndicator.style.opacity = '0.8';
+            touchIndicator.textContent = '⏸ Paused - Release to continue ⏸';
+            setTimeout(() => {
+                if (isPaused && touchIndicator.style.opacity === '0.8') {
+                    touchIndicator.style.opacity = '0.5';
+                }
+            }, 2000);
+        }
+        
+        function resumeAutoScroll() {
+            if (!isScrolling) return;
+            isPaused = false;
+            touchIndicator.style.opacity = '0.8';
+            touchIndicator.textContent = '✨ Touch & hold to pause ✨';
+            setTimeout(() => {
+                if (!isPaused && touchIndicator.style.opacity === '0.8') {
+                    touchIndicator.style.opacity = '0';
+                }
+            }, 2000);
+        }
+        
+        function finishLetterAndCelebrate() {
+            if (!isScrolling) return;
+            isScrolling = false;
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            touchIndicator.style.opacity = '0';
+            
+            // Show celebration
+            setTimeout(() => {
+                startCelebration();
+            }, 300);
+        }
+        
+        // CELEBRATION WITH CATS AND CONFETTI
+        function startCelebration() {
+            celebrationOverlay.classList.add('active');
+            
+            // Create confetti
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    createConfetti();
+                }, i * 30);
+            }
+            
+            // Continuous confetti for 3 seconds
+            let confettiInterval = setInterval(() => {
+                for (let i = 0; i < 10; i++) {
+                    createConfetti();
+                }
+            }, 200);
+            
+            setTimeout(() => {
+                clearInterval(confettiInterval);
+            }, 4000);
+            
+            // Animate cats
+            const cats = document.querySelectorAll('.cat-emoji');
+            cats.forEach((cat, index) => {
+                cat.style.animation = `float ${1.5 + index * 0.3}s ease-in-out infinite`;
+            });
+        }
+        
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.width = (5 + Math.random() * 10) + 'px';
+            confetti.style.height = (8 + Math.random() * 15) + 'px';
+            confetti.style.background = `hsl(${Math.random() * 360}, 80%, 60%)`;
+            confetti.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            celebrationOverlay.appendChild(confetti);
+            
+            setTimeout(() => {
+                confetti.remove();
+            }, 4000);
+        }
+        
+        // TOUCH & MOUSE HANDLING FOR PAUSE/RESUME
+        function handleTouchStart(e) {
+            e.preventDefault();
+            if (!isScrolling) return;
+            pauseAutoScroll();
+            isTouching = true;
+            touchStartY = e.touches ? e.touches[0].clientY : e.clientY;
+        }
+        
+        function handleTouchEnd(e) {
+            if (!isScrolling) return;
+            if (isTouching) {
+                resumeAutoScroll();
+                isTouching = false;
+            }
+        }
+        
+        function handleMouseDown(e) {
+            if (!isScrolling) return;
+            e.preventDefault();
+            pauseAutoScroll();
+            isTouching = true;
+            touchStartY = e.clientY;
+        }
+        
+        function handleMouseUp(e) {
+            if (!isScrolling) return;
+            if (isTouching) {
+                resumeAutoScroll();
+                isTouching = false;
+            }
+        }
+        
+        // Also handle window resize
+        window.addEventListener('resize', () => {
+            if (letterStage.classList.contains('active') && isScrolling) {
+                updateDimensions();
+                maxScrollPercent = calculateMaxScrollPercent();
+                maxScroll = maxScrollPercent;
+                // Adjust current position proportionally
+                let progress = (100 - scrollPosition) / (100 + maxScrollPercent);
+                if (progress < 0) progress = 0;
+                if (progress > 1) progress = 1;
+                scrollPosition = 100 - (progress * (100 + maxScrollPercent));
+                updateScrollTransform();
+            }
+        });
+        
+        // Attach touch/click listeners to scroll container
+        scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
+        scrollContainer.addEventListener('touchend', handleTouchEnd);
+        scrollContainer.addEventListener('mousedown', handleMouseDown);
+        window.addEventListener('mouseup', handleMouseUp);
+        
+        // Disable text selection on letter
+        letterContent.style.userSelect = 'none';
+        letterContent.style.webkitUserSelect = 'none';
+        
+        // Also prevent default context menu
+        scrollContainer.addEventListener('contextmenu', (e) => e.preventDefault());
     </script>
 </body>
 </html>
