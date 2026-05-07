@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConPy</title>
+    <style>
+        /* Base page styling */
+        body {
+            background-color: #E0B0FF; /* Soft Lilac */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden; 
+        }
+
+        /* --- SCREEN 1: THE ENVELOPE DROP --- */
+        #envelope-stage {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .mail-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: dropIn 2.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; 
+            transition: transform 1.5s cubic-bezier(0.7, 0, 0.3, 1), 
+                        opacity 1s ease-out;
+            will-change: transform, opacity;
+        }
+
+        .mail-wrapper.opened {
+            transform: scale(30) rotate(-10deg) !important; 
+            opacity: 0;
+            pointer-events: none; 
+        }
+
+        .envelope {
+            width: 280px;
+            height: 180px;
+            background-color: #f4f4f4;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
+            overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .envelope::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            border-top: 90px solid transparent; border-bottom: 90px solid #ececec;
+            border-left: 140px solid transparent; border-right: 140px solid transparent;
+            border-left-width: 140px; border-left-style: solid; border-left-color: #e0e0e0;
+            border-right-width: 140px; border-right-style: solid; border-right-color: #e0e0e0;
+            z-index: 1;
+        }
+
+        .envelope::after {
+            content: ''; position: absolute; top: 0; left: 0;
+            border-top: 90px solid #d4d4d4; border-bottom: 90px solid transparent;
+            border-left: 140px solid transparent; border-right: 140px solid transparent;
+            z-index: 2;
+        }
+
+        .open-btn {
+            position: relative; z-index: 10; padding: 12px 40px;
+            background-color: #ffffff; color: #4a235a;
+            border: none; border-radius: 30px;
+            font-size: 16px; font-weight: 700; letter-spacing: 1px;
+            cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            outline: none; opacity: 0; transform: scale(0.8);
+            animation: revealButton 0.8s ease-out 2.5s forwards;
+            transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s ease;
+        }
+
+        .open-btn:hover { transform: scale(1.1); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+
+        /* --- SCREEN 2: THE MESSAGE STAGE --- */
+        #message-stage {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #E0B0FF; 
+            display: flex; justify-content: center; align-items: center;
+            z-index: -1; 
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        #message-stage.active {
+            z-index: 100;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #typing-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        #typing-text {
+            color: #4a235a; 
+            font-family: 'Daniel', 'Segoe Print', 'Bradley Hand', cursive; 
+            font-size: 42px; 
+            font-weight: normal;
+            text-align: center;
+            margin: 0;
+            line-height: 1.5;
+            /* Preserves exact spacing to prevent jumps */
+            white-space: pre-wrap; 
+        }
+
+        /* Fading Words Animation (Removed margins to prevent layout shift) */
+        .fade-word {
+            display: inline-block;
+            opacity: 1;
+            color: #4a235a;
+            will-change: opacity, color;
+        }
+
+        /* --- Keyframes --- */
+        @keyframes dropIn { 0% { transform: translateY(-120vh) rotate(-720deg); } 100% { transform: translateY(0) rotate(-6deg); } }
+        @keyframes revealButton { to { opacity: 1; transform: scale(1); } }
+
+        @keyframes dissolveFade {
+            to {
+                opacity: 0;
+                color: #E0B0FF; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="envelope-stage">
+        <div class="mail-wrapper" id="mailWrapper">
+            <div class="envelope">
+                <button class="open-btn" id="openBtn">OPEN</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="message-stage">
+        <div id="typing-container">
+            <h1 id="typing-text"></h1>
+        </div>
+    </div>
+
+    <script>
+        const openBtn = document.getElementById('openBtn');
+        const mailWrapper = document.getElementById('mailWrapper');
+        const envelopeStage = document.getElementById('envelope-stage');
+        const messageStage = document.getElementById('message-stage');
+        const typingTextH1 = document.getElementById('typing-text');
+
+        // Text & Timing Configuration
+        const textToType = "There is something special for you";
+        const typingSpeed = 80; // milliseconds per letter
+        const holdMessageTime = 1500; // time to stay on screen before fading
+        let charIndex = 0;
+
+        openBtn.addEventListener('click', () => {
+            const docElm = document.documentElement;
+            if (docElm.requestFullscreen) docElm.requestFullscreen();
+            else if (docElm.webkitRequestFullscreen) docElm.webkitRequestFullscreen();
+
+            mailWrapper.classList.add('opened');
+
+            // Wait 1.5s for the envelope to zoom out
+            setTimeout(() => {
+                envelopeStage.style.display = 'none'; 
+                messageStage.classList.add('active'); 
+                
+                // Start typing half a second after background appears
+                setTimeout(typeWriter, 500);
+
+            }, 1500);
+        });
+
+        function typeWriter() {
+            if (charIndex < textToType.length) {
+                // Type the next character (No cursor line anymore)
+                typingTextH1.textContent += textToType.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, typingSpeed);
+            } else {
+                // Typing is complete. Wait, then start the fade out.
+                setTimeout(fadeSentenceAway, holdMessageTime);
+            }
+        }
+
+        function fadeSentenceAway() {
+            const wordsArray = textToType.split(' ');
+            typingTextH1.innerHTML = ''; // Clear text to rebuild it with spans perfectly
+
+            wordsArray.forEach((word, index) => {
+                // Create span for the word
+                const wordSpan = document.createElement('span');
+                wordSpan.textContent = word; 
+                wordSpan.className = 'fade-word';
+
+                // Stagger the fade out by 0.25 seconds per word
+                const cascadeDelay = index * 0.25;
+                wordSpan.style.animation = `dissolveFade 1.5s ease-in-out ${cascadeDelay}s forwards`;
+
+                typingTextH1.appendChild(wordSpan);
+
+                // Re-insert standard spaces between words to maintain exact width
+                if (index < wordsArray.length - 1) {
+                    typingTextH1.appendChild(document.createTextNode(' '));
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
