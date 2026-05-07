@@ -112,6 +112,8 @@
             animation: revealButton 0.8s ease-out 2.5s forwards;
             transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s ease;
             -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 700;
         }
 
         .open-btn:hover {
@@ -226,7 +228,27 @@
             font-size: 1.1em;
         }
 
-        /* Celebration overlay */
+        /* Touch indicator */
+        .touch-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-family: 'Segoe UI', monospace;
+            z-index: 250;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            white-space: nowrap;
+        }
+
+        /* --- CELEBRATION SLIDE (CLEAN) --- */
         #celebration-overlay {
             position: fixed;
             top: 0;
@@ -241,8 +263,8 @@
             pointer-events: none;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.5s ease;
-            background: rgba(224, 176, 255, 0.95);
+            transition: opacity 0.8s ease;
+            background: linear-gradient(135deg, #E0B0FF 0%, #d4a0f0 100%);
         }
 
         #celebration-overlay.active {
@@ -252,31 +274,65 @@
         }
 
         .birthday-message {
-            font-family: 'Daniel', 'Segoe Print', cursive;
-            font-size: clamp(32px, 10vw, 64px);
-            color: #ff1493;
-            text-shadow: 3px 3px 10px rgba(255, 20, 147, 0.3);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: clamp(28px, 8vw, 56px);
+            font-weight: 700;
+            color: #4a235a;
+            text-shadow: 2px 2px 8px rgba(74, 35, 90, 0.2);
             text-align: center;
             animation: bounce 0.8s ease-out;
-            margin-bottom: 30px;
-            font-weight: bold;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px 40px;
+            border-radius: 60px;
+            backdrop-filter: blur(10px);
         }
 
-        .cat-emoji {
-            font-size: 60px;
-            animation: float 2s ease-in-out infinite;
-            display: inline-block;
-            margin: 0 15px;
+        /* Real cat illustrations - SVG based */
+        .cat {
+            position: absolute;
+            pointer-events: none;
+            z-index: 501;
         }
 
+        .cat svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.15));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .cat-1 { top: 15%; left: 5%; width: 100px; height: 100px; animation-delay: 0s; }
+        .cat-2 { bottom: 10%; right: 3%; width: 120px; height: 120px; animation-delay: 0.5s; }
+        .cat-3 { top: 50%; left: 80%; width: 90px; height: 90px; animation-delay: 1s; transform: scaleX(-1); }
+        .cat-4 { bottom: 20%; left: 10%; width: 85px; height: 85px; animation-delay: 0.3s; }
+        .cat-5 { top: 70%; left: 20%; width: 70px; height: 70px; animation-delay: 0.8s; }
+        .cat-6 { top: 25%; right: 15%; width: 95px; height: 95px; animation-delay: 1.2s; }
+        .cat-7 { bottom: 40%; right: 25%; width: 80px; height: 80px; animation-delay: 0.6s; }
+        .cat-8 { top: 80%; left: 85%; width: 75px; height: 75px; animation-delay: 0.4s; }
+
+        /* Popper/Confetti */
         .confetti {
             position: absolute;
-            width: 10px;
-            height: 20px;
-            background: linear-gradient(135deg, #ffd700, #ff69b4, #00ced1, #ff4500);
+            width: 12px;
+            height: 24px;
+            background: linear-gradient(135deg, #ffd700, #ff69b4, #00ced1, #ff4500, #9b59b6);
             top: -20px;
             animation: fall linear forwards;
             pointer-events: none;
+            z-index: 502;
+            border-radius: 2px;
+        }
+
+        .popper-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: popOut 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 502;
         }
 
         @keyframes dropIn {
@@ -293,13 +349,13 @@
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.02); }
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
         }
 
         @keyframes fall {
@@ -309,22 +365,30 @@
             }
         }
 
-        /* Touch indicator */
-        .touch-indicator {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-family: monospace;
-            z-index: 250;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
+        @keyframes popOut {
+            0% {
+                transform: scale(0) translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) translate(var(--tx, 50px), var(--ty, -80px));
+                opacity: 0;
+            }
+        }
+
+        /* Responsive cats */
+        @media (max-width: 600px) {
+            .cat-1, .cat-2, .cat-3, .cat-4, .cat-5, .cat-6, .cat-7, .cat-8 {
+                transform: scale(0.7);
+            }
+            .cat-1 { top: 5%; left: -2%; }
+            .cat-2 { bottom: 5%; right: -5%; }
+            .cat-3 { top: 40%; left: 75%; }
+            .cat-4 { bottom: 15%; left: 0%; }
+            .birthday-message {
+                padding: 15px 25px;
+                margin-bottom: 30px;
+            }
         }
     </style>
 </head>
@@ -360,21 +424,127 @@
                 <p>I still don't know how you manage to be cute, annoying, caring, dramatic, and perfect all at the same time. The simple conversations and silly fights somehow become my favorite memories. No matter how far we are, you always make my heart feel close to you. Thank you for being my peace, my happiness, and the reason behind so many random smiles.</p>
             </div>
         </div>
-        <div class="touch-indicator" id="touchIndicator">✨ Touch & hold to pause ✨</div>
+        <div class="touch-indicator" id="touchIndicator">✨ Touch & hold anywhere to pause ✨</div>
     </div>
 
     <div id="celebration-overlay">
-        <div class="birthday-message">
-            🎂 Happy Birthday to You <span style="color:#ff69b4;">Habeeba</span> 🎂
+        <div class="birthday-message">🎂 Happy Birthday to You Habeeba 🎂</div>
+        
+        <!-- Real cat illustrations (SVG cats) -->
+        <div class="cat cat-1">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#FFA500" stroke="#CC8400" stroke-width="2"/>
+                <circle cx="50" cy="35" r="22" fill="#FFA500" stroke="#CC8400" stroke-width="2"/>
+                <polygon points="35,20 28,5 40,15" fill="#FFA500" stroke="#CC8400" stroke-width="1.5"/>
+                <polygon points="65,20 72,5 60,15" fill="#FFA500" stroke="#CC8400" stroke-width="1.5"/>
+                <circle cx="40" cy="33" r="4" fill="#333"/>
+                <circle cx="60" cy="33" r="4" fill="#333"/>
+                <ellipse cx="50" cy="45" rx="8" ry="5" fill="#FFB347"/>
+                <path d="M45 55 Q50 62 55 55" stroke="#CC8400" stroke-width="2" fill="none"/>
+                <path d="M30 70 Q25 80 20 75" stroke="#CC8400" stroke-width="2.5" fill="none"/>
+                <path d="M70 70 Q75 80 80 75" stroke="#CC8400" stroke-width="2.5" fill="none"/>
+            </svg>
         </div>
-        <div>
-            <span class="cat-emoji">🐱</span>
-            <span class="cat-emoji">🐈</span>
-            <span class="cat-emoji">😺</span>
-            <span class="cat-emoji">🐈‍⬛</span>
-            <span class="cat-emoji">🐱</span>
+        <div class="cat cat-2">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#808080" stroke="#555" stroke-width="2"/>
+                <circle cx="50" cy="35" r="22" fill="#808080" stroke="#555" stroke-width="2"/>
+                <polygon points="35,20 28,5 40,15" fill="#808080" stroke="#555" stroke-width="1.5"/>
+                <polygon points="65,20 72,5 60,15" fill="#808080" stroke="#555" stroke-width="1.5"/>
+                <circle cx="40" cy="33" r="4" fill="#333"/>
+                <circle cx="60" cy="33" r="4" fill="#333"/>
+                <ellipse cx="50" cy="45" rx="8" ry="5" fill="#999"/>
+                <path d="M45 55 Q50 62 55 55" stroke="#555" stroke-width="2" fill="none"/>
+                <rect x="35" y="70" width="8" height="12" rx="2" fill="#808080"/>
+                <rect x="57" y="70" width="8" height="12" rx="2" fill="#808080"/>
+            </svg>
         </div>
-        <div style="margin-top: 30px; font-size: 40px;">🎉🎈🎁🎊✨</div>
+        <div class="cat cat-3">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#F4A460" stroke="#CD853F" stroke-width="2"/>
+                <circle cx="50" cy="35" r="22" fill="#F4A460" stroke="#CD853F" stroke-width="2"/>
+                <polygon points="35,20 28,5 40,15" fill="#F4A460" stroke="#CD853F" stroke-width="1.5"/>
+                <polygon points="65,20 72,5 60,15" fill="#F4A460" stroke="#CD853F" stroke-width="1.5"/>
+                <circle cx="42" cy="32" r="3.5" fill="#2c1a3a"/>
+                <circle cx="58" cy="32" r="3.5" fill="#2c1a3a"/>
+                <ellipse cx="50" cy="44" rx="6" ry="4" fill="#FFE4B5"/>
+                <path d="M46 54 Q50 60 54 54" stroke="#CD853F" stroke-width="2" fill="none"/>
+                <ellipse cx="35" cy="72" rx="6" ry="4" fill="#F4A460"/>
+                <ellipse cx="65" cy="72" rx="6" ry="4" fill="#F4A460"/>
+            </svg>
+        </div>
+        <div class="cat cat-4">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="65" rx="28" ry="23" fill="#FFFACD" stroke="#DAA520" stroke-width="2"/>
+                <circle cx="50" cy="38" r="20" fill="#FFFACD" stroke="#DAA520" stroke-width="2"/>
+                <polygon points="37,24 30,10 42,19" fill="#FFFACD" stroke="#DAA520" stroke-width="1.5"/>
+                <polygon points="63,24 70,10 58,19" fill="#FFFACD" stroke="#DAA520" stroke-width="1.5"/>
+                <circle cx="42" cy="36" r="3" fill="#333"/>
+                <circle cx="58" cy="36" r="3" fill="#333"/>
+                <ellipse cx="50" cy="47" rx="7" ry="4" fill="#FFB6C1"/>
+                <path d="M46 56 Q50 62 54 56" stroke="#DAA520" stroke-width="1.8" fill="none"/>
+                <path d="M25 68 Q20 75 18 70" stroke="#DAA520" stroke-width="2" fill="none"/>
+                <path d="M75 68 Q80 75 82 70" stroke="#DAA520" stroke-width="2" fill="none"/>
+            </svg>
+        </div>
+        <div class="cat cat-5">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#FF6347" stroke="#CC4030" stroke-width="2"/>
+                <circle cx="50" cy="35" r="22" fill="#FF6347" stroke="#CC4030" stroke-width="2"/>
+                <polygon points="35,20 28,5 40,15" fill="#FF6347" stroke="#CC4030" stroke-width="1.5"/>
+                <polygon points="65,20 72,5 60,15" fill="#FF6347" stroke="#CC4030" stroke-width="1.5"/>
+                <circle cx="41" cy="33" r="3.5" fill="#fff"/>
+                <circle cx="59" cy="33" r="3.5" fill="#fff"/>
+                <circle cx="42" cy="33" r="1.8" fill="#333"/>
+                <circle cx="60" cy="33" r="1.8" fill="#333"/>
+                <ellipse cx="50" cy="45" rx="6" ry="4" fill="#FFB6C1"/>
+                <path d="M47 55 Q50 60 53 55" stroke="#CC4030" stroke-width="2" fill="none"/>
+                <circle cx="30" cy="70" r="5" fill="#FF6347"/>
+                <circle cx="70" cy="70" r="5" fill="#FF6347"/>
+            </svg>
+        </div>
+        <div class="cat cat-6">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#9B59B6" stroke="#7D3C98" stroke-width="2"/>
+                <circle cx="50" cy="35" r="22" fill="#9B59B6" stroke="#7D3C98" stroke-width="2"/>
+                <polygon points="35,20 28,5 40,15" fill="#9B59B6" stroke="#7D3C98" stroke-width="1.5"/>
+                <polygon points="65,20 72,5 60,15" fill="#9B59B6" stroke="#7D3C98" stroke-width="1.5"/>
+                <circle cx="40" cy="33" r="4" fill="#2c1a3a"/>
+                <circle cx="60" cy="33" r="4" fill="#2c1a3a"/>
+                <ellipse cx="50" cy="45" rx="8" ry="5" fill="#D2B4DE"/>
+                <path d="M45 55 Q50 62 55 55" stroke="#7D3C98" stroke-width="2" fill="none"/>
+                <path d="M32 72 L38 68" stroke="#7D3C98" stroke-width="2.5"/>
+                <path d="M68 72 L62 68" stroke="#7D3C98" stroke-width="2.5"/>
+            </svg>
+        </div>
+        <div class="cat cat-7">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#87CEEB" stroke="#4682B4" stroke-width="2"/>
+                <circle cx="50" cy="35" r="22" fill="#87CEEB" stroke="#4682B4" stroke-width="2"/>
+                <polygon points="35,20 28,5 40,15" fill="#87CEEB" stroke="#4682B4" stroke-width="1.5"/>
+                <polygon points="65,20 72,5 60,15" fill="#87CEEB" stroke="#4682B4" stroke-width="1.5"/>
+                <circle cx="41" cy="33" r="3.5" fill="#333"/>
+                <circle cx="59" cy="33" r="3.5" fill="#333"/>
+                <ellipse cx="50" cy="45" rx="7" ry="5" fill="#FFB6C1"/>
+                <path d="M46 55 Q50 61 54 55" stroke="#4682B4" stroke-width="2" fill="none"/>
+                <ellipse cx="32" cy="70" rx="5" ry="6" fill="#87CEEB"/>
+                <ellipse cx="68" cy="70" rx="5" ry="6" fill="#87CEEB"/>
+            </svg>
+        </div>
+        <div class="cat cat-8">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#FFB6C1" stroke="#FF69B4" stroke-width="2"/>
+                <circle cx="50" cy="35" r="22" fill="#FFB6C1" stroke="#FF69B4" stroke-width="2"/>
+                <polygon points="35,20 28,5 40,15" fill="#FFB6C1" stroke="#FF69B4" stroke-width="1.5"/>
+                <polygon points="65,20 72,5 60,15" fill="#FFB6C1" stroke="#FF69B4" stroke-width="1.5"/>
+                <circle cx="40" cy="33" r="4" fill="#8B4513"/>
+                <circle cx="60" cy="33" r="4" fill="#8B4513"/>
+                <ellipse cx="50" cy="44" rx="6" ry="4" fill="#FFFFFF"/>
+                <path d="M46 54 Q50 60 54 54" stroke="#FF69B4" stroke-width="2" fill="none"/>
+                <circle cx="35" cy="72" r="4" fill="#FFB6C1"/>
+                <circle cx="65" cy="72" r="4" fill="#FFB6C1"/>
+            </svg>
+        </div>
     </div>
 
     <script>
@@ -395,22 +565,18 @@
         let charIndex = 0;
 
         // Auto-scroll variables
-        let scrollPosition = 100; // Start at bottom (100% means fully at bottom, content hidden)
+        let scrollPosition = 100;
         let isPaused = false;
         let animationFrameId = null;
         let isScrolling = true;
-        let scrollSpeed = 0.35; // pixels per frame (~60fps = 21px/sec, comfortable reading speed)
+        let scrollSpeed = 0.18; // HALF the previous speed (0.35 -> 0.18)
         
-        // Get total scrollable height
-        let contentHeight = 0;
-        let containerHeight = 0;
-        let maxScroll = 0;
+        let maxScrollPercent = 0;
 
-        // Touch handling
-        let touchStartY = 0;
-        let isTouching = false;
+        // Touch handling - HOLD to pause, RELEASE to resume
+        let isHolding = false;
+        let holdTimeout = null;
 
-        // OPEN BUTTON CLICK HANDLER
         openBtn.addEventListener('click', () => {
             const docElm = document.documentElement;
             if (docElm.requestFullscreen) docElm.requestFullscreen();
@@ -425,7 +591,6 @@
             }, 1200);
         });
 
-        // TYPEWRITER FUNCTION
         function typeWriter() {
             if (charIndex < textToType.length) {
                 typingTextH1.textContent += textToType.charAt(charIndex);
@@ -436,7 +601,6 @@
             }
         }
 
-        // FADE FIRST MESSAGE
         function fadeSentenceAway() {
             const wordsArray = textToType.split(' ');
             typingTextH1.innerHTML = '';
@@ -454,7 +618,6 @@
                 }
             });
 
-            // After fade completes, transition to letter
             setTimeout(() => {
                 messageStage.classList.remove('active');
                 setTimeout(() => {
@@ -463,19 +626,15 @@
             }, 2000);
         }
 
-        // INITIALIZE THE LONG LETTER WITH AUTO-SCROLL
         function initializeLetterStage() {
             letterStage.classList.add('active');
             
-            // Force reflow to get accurate dimensions
             setTimeout(() => {
-                updateDimensions();
+                calculateMaxScroll();
                 
-                // Set initial position (bottom, hidden)
                 letterContent.style.transform = `translateY(100%)`;
                 scrollPosition = 100;
                 
-                // Start auto-scroll after a small delay
                 setTimeout(() => {
                     startAutoScroll();
                     touchIndicator.style.opacity = '0.8';
@@ -488,72 +647,34 @@
             }, 100);
         }
 
-        function updateDimensions() {
-            contentHeight = letterContent.scrollHeight;
-            containerHeight = scrollContainer.clientHeight;
-            maxScroll = contentHeight - containerHeight;
-        }
-
-        function updateScrollPosition() {
-            if (!isScrolling || isPaused) return;
-            
-            // Move from bottom to top: decrease translateY percentage
-            // Start at 100% (completely below viewport), end at -100% (completely above)
-            // Actually we want: 100% (bottom edge at container bottom) to -maxScrollPercent%
-            
-            let newScrollPercent = scrollPosition - scrollSpeed;
-            
-            if (newScrollPercent <= -maxScroll) {
-                // Scrolling complete
-                newScrollPercent = -maxScroll;
-                scrollPosition = newScrollPercent;
-                updateScrollTransform();
-                finishLetterAndCelebrate();
-                return;
-            }
-            
-            scrollPosition = newScrollPercent;
-            updateScrollTransform();
-            
-            animationFrameId = requestAnimationFrame(updateScrollPosition);
-        }
-        
-        let calculatedMaxPercent = 0;
-        
-        function updateScrollTransform() {
-            // Convert scroll progress to translateY percentage
-            // When scrollPosition = 100 (start) -> translateY(100%) [hidden below]
-            // When scrollPosition = -maxScrollPercent (end) -> translateY(-maxScrollPercent%) [hidden above]
-            letterContent.style.transform = `translateY(${scrollPosition}%)`;
-        }
-        
-        function calculateMaxScrollPercent() {
+        function calculateMaxScroll() {
             const contentH = letterContent.scrollHeight;
             const containerH = scrollContainer.clientHeight;
             const totalScrollPx = contentH - containerH;
-            // Convert px to percentage relative to content height
-            if (contentH <= 0) return 100;
-            const percent = (totalScrollPx / contentH) * 100;
-            return Math.min(200, percent);
+            if (contentH <= 0) {
+                maxScrollPercent = 100;
+                return;
+            }
+            maxScrollPercent = (totalScrollPx / contentH) * 100;
+            if (maxScrollPercent < 0) maxScrollPercent = 0;
+            if (maxScrollPercent > 200) maxScrollPercent = 200;
         }
-        
-        let maxScrollPercent = 0;
-        
+
         function startAutoScroll() {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             
-            // Reset scroll position
             scrollPosition = 100;
             updateScrollTransform();
-            
-            maxScrollPercent = calculateMaxScrollPercent();
-            maxScroll = maxScrollPercent;
+            calculateMaxScroll();
             
             isScrolling = true;
             isPaused = false;
             
             function scrollStep() {
-                if (!isScrolling || isPaused) {
+                if (!isScrolling) return;
+                
+                // Check if paused by hold
+                if (isHolding || isPaused) {
                     animationFrameId = requestAnimationFrame(scrollStep);
                     return;
                 }
@@ -576,25 +697,25 @@
             animationFrameId = requestAnimationFrame(scrollStep);
         }
         
-        function pauseAutoScroll() {
-            if (!isScrolling) return;
-            isPaused = true;
-            touchIndicator.style.opacity = '0.8';
-            touchIndicator.textContent = '⏸ Paused - Release to continue ⏸';
-            setTimeout(() => {
-                if (isPaused && touchIndicator.style.opacity === '0.8') {
-                    touchIndicator.style.opacity = '0.5';
-                }
-            }, 2000);
+        function updateScrollTransform() {
+            letterContent.style.transform = `translateY(${scrollPosition}%)`;
         }
         
-        function resumeAutoScroll() {
+        // HOLD = PAUSE, RELEASE = RESUME
+        function startHold() {
             if (!isScrolling) return;
-            isPaused = false;
+            isHolding = true;
             touchIndicator.style.opacity = '0.8';
-            touchIndicator.textContent = '✨ Touch & hold to pause ✨';
+            touchIndicator.textContent = '⏸ Paused - Release to continue ⏸';
+        }
+        
+        function endHold() {
+            if (!isScrolling) return;
+            isHolding = false;
+            touchIndicator.style.opacity = '0.8';
+            touchIndicator.textContent = '✨ Touch & hold anywhere to pause ✨';
             setTimeout(() => {
-                if (!isPaused && touchIndicator.style.opacity === '0.8') {
+                if (!isHolding && touchIndicator.style.opacity === '0.8') {
                     touchIndicator.style.opacity = '0';
                 }
             }, 2000);
@@ -603,52 +724,52 @@
         function finishLetterAndCelebrate() {
             if (!isScrolling) return;
             isScrolling = false;
+            isHolding = false;
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             touchIndicator.style.opacity = '0';
             
-            // Show celebration
             setTimeout(() => {
                 startCelebration();
             }, 300);
         }
         
-        // CELEBRATION WITH CATS AND CONFETTI
         function startCelebration() {
             celebrationOverlay.classList.add('active');
             
-            // Create confetti
-            for (let i = 0; i < 150; i++) {
+            // Create confetti and popper effects
+            for (let i = 0; i < 200; i++) {
                 setTimeout(() => {
                     createConfetti();
-                }, i * 30);
+                }, i * 15);
             }
             
-            // Continuous confetti for 3 seconds
+            // Create popper bursts at different positions
+            for (let burst = 0; burst < 12; burst++) {
+                setTimeout(() => {
+                    createPopperBurst();
+                }, burst * 200);
+            }
+            
+            // Continuous confetti for 4 seconds
             let confettiInterval = setInterval(() => {
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 15; i++) {
                     createConfetti();
                 }
-            }, 200);
+            }, 150);
             
             setTimeout(() => {
                 clearInterval(confettiInterval);
-            }, 4000);
-            
-            // Animate cats
-            const cats = document.querySelectorAll('.cat-emoji');
-            cats.forEach((cat, index) => {
-                cat.style.animation = `float ${1.5 + index * 0.3}s ease-in-out infinite`;
-            });
+            }, 4500);
         }
         
         function createConfetti() {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
             confetti.style.left = Math.random() * 100 + '%';
-            confetti.style.width = (5 + Math.random() * 10) + 'px';
-            confetti.style.height = (8 + Math.random() * 15) + 'px';
+            confetti.style.width = (6 + Math.random() * 12) + 'px';
+            confetti.style.height = (10 + Math.random() * 18) + 'px';
             confetti.style.background = `hsl(${Math.random() * 360}, 80%, 60%)`;
-            confetti.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+            confetti.style.animationDuration = (1.2 + Math.random() * 2.5) + 's';
             confetti.style.animationDelay = Math.random() * 0.5 + 's';
             celebrationOverlay.appendChild(confetti);
             
@@ -657,46 +778,80 @@
             }, 4000);
         }
         
-        // TOUCH & MOUSE HANDLING FOR PAUSE/RESUME
+        function createPopperBurst() {
+            const centerX = Math.random() * 80 + 10;
+            const centerY = Math.random() * 80 + 10;
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'popper-particle';
+                const angle = (Math.PI * 2 * i) / 30;
+                const distance = 60 + Math.random() * 80;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 40;
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                particle.style.left = centerX + '%';
+                particle.style.top = centerY + '%';
+                particle.style.background = `hsl(${Math.random() * 360}, 85%, 55%)`;
+                particle.style.width = (6 + Math.random() * 10) + 'px';
+                particle.style.height = (6 + Math.random() * 10) + 'px';
+                celebrationOverlay.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 1000);
+            }
+        }
+        
+        // Touch event handlers - HOLD to pause, RELEASE to resume
         function handleTouchStart(e) {
             e.preventDefault();
-            if (!isScrolling) return;
-            pauseAutoScroll();
-            isTouching = true;
-            touchStartY = e.touches ? e.touches[0].clientY : e.clientY;
+            startHold();
+            // Also track for long press
+            holdTimeout = setTimeout(() => {
+                // Already paused via startHold
+            }, 100);
         }
         
         function handleTouchEnd(e) {
-            if (!isScrolling) return;
-            if (isTouching) {
-                resumeAutoScroll();
-                isTouching = false;
-            }
+            clearTimeout(holdTimeout);
+            endHold();
         }
         
         function handleMouseDown(e) {
-            if (!isScrolling) return;
             e.preventDefault();
-            pauseAutoScroll();
-            isTouching = true;
-            touchStartY = e.clientY;
+            startHold();
+            holdTimeout = setTimeout(() => {}, 100);
         }
         
         function handleMouseUp(e) {
-            if (!isScrolling) return;
-            if (isTouching) {
-                resumeAutoScroll();
-                isTouching = false;
-            }
+            clearTimeout(holdTimeout);
+            endHold();
         }
         
-        // Also handle window resize
+        // Handle touch move - if user moves too much, still consider as holding
+        function handleTouchMove(e) {
+            e.preventDefault();
+            // Keep holding state active
+        }
+        
+        // Attach event listeners for proper hold-to-pause behavior
+        scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
+        scrollContainer.addEventListener('touchend', handleTouchEnd);
+        scrollContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
+        scrollContainer.addEventListener('mousedown', handleMouseDown);
+        window.addEventListener('mouseup', handleMouseUp);
+        
+        // Disable text selection and context menu
+        letterContent.style.userSelect = 'none';
+        letterContent.style.webkitUserSelect = 'none';
+        scrollContainer.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        // Handle window resize
         window.addEventListener('resize', () => {
             if (letterStage.classList.contains('active') && isScrolling) {
-                updateDimensions();
-                maxScrollPercent = calculateMaxScrollPercent();
-                maxScroll = maxScrollPercent;
-                // Adjust current position proportionally
+                calculateMaxScroll();
                 let progress = (100 - scrollPosition) / (100 + maxScrollPercent);
                 if (progress < 0) progress = 0;
                 if (progress > 1) progress = 1;
@@ -704,19 +859,6 @@
                 updateScrollTransform();
             }
         });
-        
-        // Attach touch/click listeners to scroll container
-        scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
-        scrollContainer.addEventListener('touchend', handleTouchEnd);
-        scrollContainer.addEventListener('mousedown', handleMouseDown);
-        window.addEventListener('mouseup', handleMouseUp);
-        
-        // Disable text selection on letter
-        letterContent.style.userSelect = 'none';
-        letterContent.style.webkitUserSelect = 'none';
-        
-        // Also prevent default context menu
-        scrollContainer.addEventListener('contextmenu', (e) => e.preventDefault());
     </script>
 </body>
 </html>
