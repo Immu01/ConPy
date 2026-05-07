@@ -144,6 +144,78 @@
             visibility: visible;
         }
 
+        /* --- SCREEN 3: THE LONG LETTER (AUTO-SCROLL) --- */
+        #letter-stage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #E0B0FF 0%, #c896e6 100%);
+            z-index: -1;
+            opacity: 0;
+            visibility: hidden;
+            overflow: hidden;
+            transition: opacity 0.8s ease;
+        }
+
+        #letter-stage.active {
+            z-index: 200;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- SCREEN 4: BIRTHDAY WISH (SAME STYLE AS FIRST MESSAGE) --- */
+        #wish-stage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #E0B0FF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: -1;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        #wish-stage.active {
+            z-index: 400;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #wish-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        #wish-text {
+            color: #4a235a;
+            font-family: 'Daniel', 'Segoe Print', 'Bradley Hand', cursive;
+            font-size: clamp(28px, 10vw, 56px);
+            font-weight: normal;
+            text-align: center;
+            margin: 0;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+
+        .wish-fade-word {
+            display: inline-block;
+            opacity: 1;
+            color: #4a235a;
+            will-change: opacity, color;
+        }
+
+        /* Message typer styling (same as before) */
         #typing-container {
             display: flex;
             justify-content: center;
@@ -171,27 +243,7 @@
             will-change: opacity, color;
         }
 
-        /* --- SCREEN 3: THE LONG LETTER (AUTO-SCROLL) --- */
-        #letter-stage {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #E0B0FF 0%, #c896e6 100%);
-            z-index: -1;
-            opacity: 0;
-            visibility: hidden;
-            overflow: hidden;
-            transition: opacity 0.8s ease;
-        }
-
-        #letter-stage.active {
-            z-index: 200;
-            opacity: 1;
-            visibility: visible;
-        }
-
+        /* Scroll letter styles */
         .scroll-container {
             position: relative;
             width: 100%;
@@ -248,189 +300,7 @@
             white-space: nowrap;
         }
 
-        /* --- CELEBRATION SLIDE - CLEAN with 3 SURPRISES --- */
-        #celebration-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 500;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            pointer-events: none;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.6s ease;
-            background: radial-gradient(circle at center, #E0B0FF 0%, #c896e6 100%);
-        }
-
-        #celebration-overlay.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        /* Main Birthday Text */
-        .birthday-message {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: clamp(32px, 9vw, 64px);
-            font-weight: 800;
-            color: #4a235a;
-            text-align: center;
-            margin-bottom: 60px;
-            letter-spacing: 3px;
-            background: linear-gradient(135deg, #4a235a, #8b3a62, #ff69b4);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: gradientShift 2s ease infinite, bounce 0.8s ease-out;
-            text-shadow: none;
-        }
-
-        /* 3 Creative Surprises Container */
-        .surprises-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 50px;
-            flex-wrap: wrap;
-            perspective: 1000px;
-        }
-
-        /* Surprise Cards */
-        .surprise-card {
-            width: 140px;
-            height: 160px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            opacity: 0;
-            transform: translateY(50px) rotateY(90deg);
-            pointer-events: auto;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .surprise-card.revealed {
-            background: rgba(255, 255, 255, 0.95);
-            transform: translateY(0) rotateY(0deg) scale(1.05);
-        }
-
-        .surprise-card:hover {
-            transform: translateY(-10px) scale(1.05);
-        }
-
-        .surprise-card.revealed:hover {
-            transform: translateY(-10px) scale(1.08);
-        }
-
-        /* Card Front (Hidden state) */
-        .card-front {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            backface-visibility: hidden;
-            transition: opacity 0.3s;
-        }
-
-        .surprise-card .card-front {
-            opacity: 1;
-        }
-
-        .surprise-card.revealed .card-front {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Card Back (Revealed state) */
-        .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            text-align: center;
-            padding: 15px;
-            box-sizing: border-box;
-        }
-
-        .surprise-card.revealed .card-back {
-            opacity: 1;
-        }
-
-        /* Question mark style */
-        .question-mark {
-            font-size: 48px;
-            font-weight: bold;
-            color: white;
-            animation: pulse 1.5s ease infinite;
-        }
-
-        .card-label {
-            margin-top: 10px;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Revealed content styles */
-        .surprise-emoji {
-            font-size: 50px;
-            margin-bottom: 10px;
-            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .surprise-text {
-            font-size: 14px;
-            color: #4a235a;
-            font-weight: 600;
-            margin-top: 10px;
-            line-height: 1.4;
-        }
-
-        /* Surprise 1 - Special Quote */
-        .quote-text {
-            font-size: 12px;
-            font-style: italic;
-            color: #8b3a62;
-        }
-
-        /* Surprise 2 - Heart Animation */
-        .floating-heart {
-            font-size: 40px;
-            animation: heartbeat 1s ease infinite;
-        }
-
-        /* Surprise 3 - Sparkle */
-        .sparkle {
-            font-size: 45px;
-            animation: spin 2s linear infinite;
-            display: inline-block;
-        }
-
-        /* Confetti & Popper (keeping the celebration feel) */
+        /* Simple confetti for wish */
         .confetti {
             position: absolute;
             width: 10px;
@@ -439,21 +309,10 @@
             top: -20px;
             animation: fall linear forwards;
             pointer-events: none;
-            z-index: 502;
+            z-index: 500;
             border-radius: 2px;
         }
 
-        .popper-particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            animation: popOut 0.8s ease-out forwards;
-            pointer-events: none;
-            z-index: 502;
-        }
-
-        /* Animations */
         @keyframes dropIn {
             0% { transform: translateY(-120vh) rotate(-720deg); }
             100% { transform: translateY(0) rotate(-6deg); }
@@ -467,75 +326,10 @@
             to { opacity: 0; color: #E0B0FF; }
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-15px) scale(1.02); }
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
         @keyframes fall {
             to {
                 transform: translateY(100vh) rotate(360deg);
                 opacity: 0;
-            }
-        }
-
-        @keyframes popOut {
-            0% {
-                transform: scale(0) translate(0, 0);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1) translate(var(--tx, 50px), var(--ty, -80px));
-                opacity: 0;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .surprises-container {
-                gap: 20px;
-            }
-            .surprise-card {
-                width: 100px;
-                height: 120px;
-            }
-            .surprise-emoji {
-                font-size: 35px;
-            }
-            .surprise-text {
-                font-size: 10px;
-            }
-            .question-mark {
-                font-size: 35px;
-            }
-            .birthday-message {
-                margin-bottom: 40px;
             }
         }
     </style>
@@ -575,45 +369,9 @@
         <div class="touch-indicator" id="touchIndicator">✨ Touch & hold anywhere to pause ✨</div>
     </div>
 
-    <div id="celebration-overlay">
-        <div class="birthday-message">🎂 Happy Birthday to You Habeeba 🎂</div>
-        
-        <div class="surprises-container">
-            <!-- Surprise 1: Love Quote -->
-            <div class="surprise-card" data-surprise="1">
-                <div class="card-front">
-                    <div class="question-mark">?</div>
-                    <div class="card-label">Click to reveal</div>
-                </div>
-                <div class="card-back">
-                    <div class="surprise-emoji">💌</div>
-                    <div class="surprise-text quote-text">"You make my world<br>beautiful every day"</div>
-                </div>
-            </div>
-
-            <!-- Surprise 2: Heart Promise -->
-            <div class="surprise-card" data-surprise="2">
-                <div class="card-front">
-                    <div class="question-mark">?</div>
-                    <div class="card-label">Click to reveal</div>
-                </div>
-                <div class="card-back">
-                    <div class="surprise-emoji floating-heart">💖</div>
-                    <div class="surprise-text">Forever & Always<br>By your side</div>
-                </div>
-            </div>
-
-            <!-- Surprise 3: Sparkle Wish -->
-            <div class="surprise-card" data-surprise="3">
-                <div class="card-front">
-                    <div class="question-mark">?</div>
-                    <div class="card-label">Click to reveal</div>
-                </div>
-                <div class="card-back">
-                    <div class="surprise-emoji sparkle">✨🌟✨</div>
-                    <div class="surprise-text">May all your wishes<br>come true today</div>
-                </div>
-            </div>
+    <div id="wish-stage">
+        <div id="wish-container">
+            <h1 id="wish-text"></h1>
         </div>
     </div>
 
@@ -627,12 +385,15 @@
         const letterContent = document.getElementById('letterContent');
         const scrollContainer = document.getElementById('scrollContainer');
         const touchIndicator = document.getElementById('touchIndicator');
-        const celebrationOverlay = document.getElementById('celebration-overlay');
+        const wishStage = document.getElementById('wish-stage');
+        const wishTextH1 = document.getElementById('wish-text');
 
         const textToType = "There is something special for you";
+        const wishText = "Happy Birthday to you Habeeba 🎂";
         const typingSpeed = 80;
         const holdMessageTime = 1500;
         let charIndex = 0;
+        let wishCharIndex = 0;
 
         // Auto-scroll variables
         let scrollPosition = 100;
@@ -796,60 +557,68 @@
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             touchIndicator.style.opacity = '0';
             
-            // Reduced delay from 300ms to 150ms (half)
+            // Hide letter stage
+            letterStage.classList.remove('active');
+            
+            // Reduced delay (half of previous)
             setTimeout(() => {
-                startCelebration();
+                showWishMessage();
             }, 150);
         }
         
-        function startCelebration() {
-            celebrationOverlay.classList.add('active');
+        function showWishMessage() {
+            wishStage.classList.add('active');
+            startWishTyper();
             
-            // Animate cards entrance with staggered delays
-            const cards = document.querySelectorAll('.surprise-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0) rotateY(0deg)';
-                }, index * 200);
-            });
-            
-            // Create confetti and popper effects
+            // Add confetti celebration
             for (let i = 0; i < 200; i++) {
                 setTimeout(() => {
                     createConfetti();
-                }, i * 15);
-            }
-            
-            // Create popper bursts
-            for (let burst = 0; burst < 15; burst++) {
-                setTimeout(() => {
-                    createPopperBurst();
-                }, burst * 150);
+                }, i * 20);
             }
             
             // Continuous confetti
             let confettiInterval = setInterval(() => {
-                for (let i = 0; i < 15; i++) {
+                for (let i = 0; i < 20; i++) {
                     createConfetti();
                 }
-            }, 150);
+            }, 200);
             
             setTimeout(() => {
                 clearInterval(confettiInterval);
             }, 5000);
+        }
+        
+        function startWishTyper() {
+            if (wishCharIndex < wishText.length) {
+                wishTextH1.textContent += wishText.charAt(wishCharIndex);
+                wishCharIndex++;
+                setTimeout(startWishTyper, typingSpeed);
+            } else {
+                // Hold the message then fade away
+                setTimeout(fadeWishAway, holdMessageTime);
+            }
+        }
+        
+        function fadeWishAway() {
+            const wordsArray = wishText.split(' ');
+            wishTextH1.innerHTML = '';
             
-            // Add click handlers for surprise cards
-            cards.forEach(card => {
-                card.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (!card.classList.contains('revealed')) {
-                        card.classList.add('revealed');
-                        // Create mini celebration when card is revealed
-                        createMiniPopper(card);
-                    }
-                });
+            wordsArray.forEach((word, index) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.textContent = word;
+                wordSpan.className = 'wish-fade-word';
+                const cascadeDelay = index * 0.2;
+                wordSpan.style.animation = `dissolveFade 1.5s ease-in-out ${cascadeDelay}s forwards`;
+                wishTextH1.appendChild(wordSpan);
+                
+                if (index < wordsArray.length - 1) {
+                    wishTextH1.appendChild(document.createTextNode(' '));
+                }
             });
+            
+            // Keep the stage visible but with faded text, then confetti continues
+            // No further action needed - celebration continues
         }
         
         function createConfetti() {
@@ -861,62 +630,11 @@
             confetti.style.background = `hsl(${Math.random() * 360}, 80%, 60%)`;
             confetti.style.animationDuration = (1.2 + Math.random() * 2.5) + 's';
             confetti.style.animationDelay = Math.random() * 0.5 + 's';
-            celebrationOverlay.appendChild(confetti);
+            document.body.appendChild(confetti);
             
             setTimeout(() => {
                 confetti.remove();
             }, 4000);
-        }
-        
-        function createPopperBurst() {
-            const centerX = Math.random() * 80 + 10;
-            const centerY = Math.random() * 80 + 10;
-            
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'popper-particle';
-                const angle = (Math.PI * 2 * i) / 30;
-                const distance = 60 + Math.random() * 80;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance - 40;
-                particle.style.setProperty('--tx', tx + 'px');
-                particle.style.setProperty('--ty', ty + 'px');
-                particle.style.left = centerX + '%';
-                particle.style.top = centerY + '%';
-                particle.style.background = `hsl(${Math.random() * 360}, 85%, 55%)`;
-                particle.style.width = (6 + Math.random() * 10) + 'px';
-                particle.style.height = (6 + Math.random() * 10) + 'px';
-                celebrationOverlay.appendChild(particle);
-                
-                setTimeout(() => {
-                    particle.remove();
-                }, 1000);
-            }
-        }
-        
-        function createMiniPopper(element) {
-            const rect = element.getBoundingClientRect();
-            const centerX = (rect.left + rect.width / 2) / window.innerWidth * 100;
-            const centerY = (rect.top + rect.height / 2) / window.innerHeight * 100;
-            
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'popper-particle';
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 40 + Math.random() * 60;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance - 30;
-                particle.style.setProperty('--tx', tx + 'px');
-                particle.style.setProperty('--ty', ty + 'px');
-                particle.style.left = centerX + '%';
-                particle.style.top = centerY + '%';
-                particle.style.background = `hsl(${Math.random() * 360}, 85%, 65%)`;
-                celebrationOverlay.appendChild(particle);
-                
-                setTimeout(() => {
-                    particle.remove();
-                }, 800);
-            }
         }
         
         // Touch event handlers
