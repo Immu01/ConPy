@@ -17,12 +17,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* FIX: Prevents word selection on touch/click */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            /* FIX: Prevents mobile browsers from auto-scaling text */
             -webkit-text-size-adjust: 100%;
         }
 
@@ -42,15 +40,24 @@
             justify-content: center;
             align-items: center;
             animation: dropIn 2.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; 
-            transition: transform 1.5s cubic-bezier(0.7, 0, 0.3, 1), 
-                        opacity 1s ease-out;
+            transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1), 
+                        opacity 0.8s ease-out;
             will-change: transform, opacity;
         }
 
+        /* State triggered on click */
         .mail-wrapper.opened {
-            transform: scale(40) rotate(-10deg) !important; 
+            /* Default zoom for laptops */
+            transform: scale(30) rotate(-10deg) !important; 
             opacity: 0;
             pointer-events: none; 
+        }
+
+        /* FIX: Smaller zoom scale specifically for mobile devices */
+        @media (max-width: 600px) {
+            .mail-wrapper.opened {
+                transform: scale(12) rotate(-5deg) !important;
+            }
         }
 
         .envelope {
@@ -89,7 +96,6 @@
             outline: none; opacity: 0; transform: scale(0.8);
             animation: revealButton 0.8s ease-out 2.5s forwards;
             transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s ease;
-            /* Ensure button doesn't show tap highlight on mobile */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -114,7 +120,7 @@
         #typing-text {
             color: #4a235a; 
             font-family: 'Daniel', 'Segoe Print', 'Bradley Hand', cursive; 
-            font-size: clamp(24px, 8vw, 42px); /* FIX: Responsive font size for mobile */
+            font-size: clamp(24px, 8vw, 42px); 
             font-weight: normal;
             text-align: center;
             margin: 0;
@@ -169,7 +175,7 @@
                 envelopeStage.style.display = 'none'; 
                 messageStage.classList.add('active'); 
                 setTimeout(typeWriter, 500);
-            }, 1500);
+            }, 1200); // Slightly faster transition
         });
 
         function typeWriter() {
