@@ -248,7 +248,7 @@
             white-space: nowrap;
         }
 
-        /* --- CELEBRATION SLIDE (CLEAN) --- */
+        /* --- CELEBRATION SLIDE - CLEAN with 3 SURPRISES --- */
         #celebration-overlay {
             position: fixed;
             top: 0;
@@ -263,8 +263,8 @@
             pointer-events: none;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.8s ease;
-            background: linear-gradient(135deg, #E0B0FF 0%, #d4a0f0 100%);
+            transition: opacity 0.6s ease;
+            background: radial-gradient(circle at center, #E0B0FF 0%, #c896e6 100%);
         }
 
         #celebration-overlay.active {
@@ -273,51 +273,169 @@
             pointer-events: auto;
         }
 
+        /* Main Birthday Text */
         .birthday-message {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: clamp(28px, 8vw, 56px);
-            font-weight: 700;
+            font-size: clamp(32px, 9vw, 64px);
+            font-weight: 800;
             color: #4a235a;
-            text-shadow: 2px 2px 8px rgba(74, 35, 90, 0.2);
             text-align: center;
-            animation: bounce 0.8s ease-out;
-            margin-bottom: 40px;
-            letter-spacing: 2px;
-            background: rgba(255, 255, 255, 0.3);
-            padding: 20px 40px;
-            border-radius: 60px;
-            backdrop-filter: blur(10px);
+            margin-bottom: 60px;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #4a235a, #8b3a62, #ff69b4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 2s ease infinite, bounce 0.8s ease-out;
+            text-shadow: none;
         }
 
-        /* Real cat illustrations - SVG based */
-        .cat {
+        /* 3 Creative Surprises Container */
+        .surprises-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            perspective: 1000px;
+        }
+
+        /* Surprise Cards */
+        .surprise-card {
+            width: 140px;
+            height: 160px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+            transform: translateY(50px) rotateY(90deg);
+            pointer-events: auto;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .surprise-card.revealed {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(0) rotateY(0deg) scale(1.05);
+        }
+
+        .surprise-card:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        .surprise-card.revealed:hover {
+            transform: translateY(-10px) scale(1.08);
+        }
+
+        /* Card Front (Hidden state) */
+        .card-front {
             position: absolute;
-            pointer-events: none;
-            z-index: 501;
-        }
-
-        .cat svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.15));
-            animation: float 3s ease-in-out infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            transition: opacity 0.3s;
         }
 
-        .cat-1 { top: 15%; left: 5%; width: 100px; height: 100px; animation-delay: 0s; }
-        .cat-2 { bottom: 10%; right: 3%; width: 120px; height: 120px; animation-delay: 0.5s; }
-        .cat-3 { top: 50%; left: 80%; width: 90px; height: 90px; animation-delay: 1s; transform: scaleX(-1); }
-        .cat-4 { bottom: 20%; left: 10%; width: 85px; height: 85px; animation-delay: 0.3s; }
-        .cat-5 { top: 70%; left: 20%; width: 70px; height: 70px; animation-delay: 0.8s; }
-        .cat-6 { top: 25%; right: 15%; width: 95px; height: 95px; animation-delay: 1.2s; }
-        .cat-7 { bottom: 40%; right: 25%; width: 80px; height: 80px; animation-delay: 0.6s; }
-        .cat-8 { top: 80%; left: 85%; width: 75px; height: 75px; animation-delay: 0.4s; }
+        .surprise-card .card-front {
+            opacity: 1;
+        }
 
-        /* Popper/Confetti */
+        .surprise-card.revealed .card-front {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Card Back (Revealed state) */
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-align: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .surprise-card.revealed .card-back {
+            opacity: 1;
+        }
+
+        /* Question mark style */
+        .question-mark {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        .card-label {
+            margin-top: 10px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Revealed content styles */
+        .surprise-emoji {
+            font-size: 50px;
+            margin-bottom: 10px;
+            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .surprise-text {
+            font-size: 14px;
+            color: #4a235a;
+            font-weight: 600;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        /* Surprise 1 - Special Quote */
+        .quote-text {
+            font-size: 12px;
+            font-style: italic;
+            color: #8b3a62;
+        }
+
+        /* Surprise 2 - Heart Animation */
+        .floating-heart {
+            font-size: 40px;
+            animation: heartbeat 1s ease infinite;
+        }
+
+        /* Surprise 3 - Sparkle */
+        .sparkle {
+            font-size: 45px;
+            animation: spin 2s linear infinite;
+            display: inline-block;
+        }
+
+        /* Confetti & Popper (keeping the celebration feel) */
         .confetti {
             position: absolute;
-            width: 12px;
-            height: 24px;
-            background: linear-gradient(135deg, #ffd700, #ff69b4, #00ced1, #ff4500, #9b59b6);
+            width: 10px;
+            height: 20px;
+            background: linear-gradient(135deg, #ffd700, #ff69b4, #00ced1, #ff4500);
             top: -20px;
             animation: fall linear forwards;
             pointer-events: none;
@@ -335,6 +453,7 @@
             z-index: 502;
         }
 
+        /* Animations */
         @keyframes dropIn {
             0% { transform: translateY(-120vh) rotate(-720deg); }
             100% { transform: translateY(0) rotate(-6deg); }
@@ -353,9 +472,30 @@
             50% { transform: translateY(-15px) scale(1.02); }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(3deg); }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         @keyframes fall {
@@ -376,18 +516,26 @@
             }
         }
 
-        /* Responsive cats */
+        /* Responsive */
         @media (max-width: 600px) {
-            .cat-1, .cat-2, .cat-3, .cat-4, .cat-5, .cat-6, .cat-7, .cat-8 {
-                transform: scale(0.7);
+            .surprises-container {
+                gap: 20px;
             }
-            .cat-1 { top: 5%; left: -2%; }
-            .cat-2 { bottom: 5%; right: -5%; }
-            .cat-3 { top: 40%; left: 75%; }
-            .cat-4 { bottom: 15%; left: 0%; }
+            .surprise-card {
+                width: 100px;
+                height: 120px;
+            }
+            .surprise-emoji {
+                font-size: 35px;
+            }
+            .surprise-text {
+                font-size: 10px;
+            }
+            .question-mark {
+                font-size: 35px;
+            }
             .birthday-message {
-                padding: 15px 25px;
-                margin-bottom: 30px;
+                margin-bottom: 40px;
             }
         }
     </style>
@@ -430,120 +578,42 @@
     <div id="celebration-overlay">
         <div class="birthday-message">🎂 Happy Birthday to You Habeeba 🎂</div>
         
-        <!-- Real cat illustrations (SVG cats) -->
-        <div class="cat cat-1">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#FFA500" stroke="#CC8400" stroke-width="2"/>
-                <circle cx="50" cy="35" r="22" fill="#FFA500" stroke="#CC8400" stroke-width="2"/>
-                <polygon points="35,20 28,5 40,15" fill="#FFA500" stroke="#CC8400" stroke-width="1.5"/>
-                <polygon points="65,20 72,5 60,15" fill="#FFA500" stroke="#CC8400" stroke-width="1.5"/>
-                <circle cx="40" cy="33" r="4" fill="#333"/>
-                <circle cx="60" cy="33" r="4" fill="#333"/>
-                <ellipse cx="50" cy="45" rx="8" ry="5" fill="#FFB347"/>
-                <path d="M45 55 Q50 62 55 55" stroke="#CC8400" stroke-width="2" fill="none"/>
-                <path d="M30 70 Q25 80 20 75" stroke="#CC8400" stroke-width="2.5" fill="none"/>
-                <path d="M70 70 Q75 80 80 75" stroke="#CC8400" stroke-width="2.5" fill="none"/>
-            </svg>
-        </div>
-        <div class="cat cat-2">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#808080" stroke="#555" stroke-width="2"/>
-                <circle cx="50" cy="35" r="22" fill="#808080" stroke="#555" stroke-width="2"/>
-                <polygon points="35,20 28,5 40,15" fill="#808080" stroke="#555" stroke-width="1.5"/>
-                <polygon points="65,20 72,5 60,15" fill="#808080" stroke="#555" stroke-width="1.5"/>
-                <circle cx="40" cy="33" r="4" fill="#333"/>
-                <circle cx="60" cy="33" r="4" fill="#333"/>
-                <ellipse cx="50" cy="45" rx="8" ry="5" fill="#999"/>
-                <path d="M45 55 Q50 62 55 55" stroke="#555" stroke-width="2" fill="none"/>
-                <rect x="35" y="70" width="8" height="12" rx="2" fill="#808080"/>
-                <rect x="57" y="70" width="8" height="12" rx="2" fill="#808080"/>
-            </svg>
-        </div>
-        <div class="cat cat-3">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#F4A460" stroke="#CD853F" stroke-width="2"/>
-                <circle cx="50" cy="35" r="22" fill="#F4A460" stroke="#CD853F" stroke-width="2"/>
-                <polygon points="35,20 28,5 40,15" fill="#F4A460" stroke="#CD853F" stroke-width="1.5"/>
-                <polygon points="65,20 72,5 60,15" fill="#F4A460" stroke="#CD853F" stroke-width="1.5"/>
-                <circle cx="42" cy="32" r="3.5" fill="#2c1a3a"/>
-                <circle cx="58" cy="32" r="3.5" fill="#2c1a3a"/>
-                <ellipse cx="50" cy="44" rx="6" ry="4" fill="#FFE4B5"/>
-                <path d="M46 54 Q50 60 54 54" stroke="#CD853F" stroke-width="2" fill="none"/>
-                <ellipse cx="35" cy="72" rx="6" ry="4" fill="#F4A460"/>
-                <ellipse cx="65" cy="72" rx="6" ry="4" fill="#F4A460"/>
-            </svg>
-        </div>
-        <div class="cat cat-4">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="65" rx="28" ry="23" fill="#FFFACD" stroke="#DAA520" stroke-width="2"/>
-                <circle cx="50" cy="38" r="20" fill="#FFFACD" stroke="#DAA520" stroke-width="2"/>
-                <polygon points="37,24 30,10 42,19" fill="#FFFACD" stroke="#DAA520" stroke-width="1.5"/>
-                <polygon points="63,24 70,10 58,19" fill="#FFFACD" stroke="#DAA520" stroke-width="1.5"/>
-                <circle cx="42" cy="36" r="3" fill="#333"/>
-                <circle cx="58" cy="36" r="3" fill="#333"/>
-                <ellipse cx="50" cy="47" rx="7" ry="4" fill="#FFB6C1"/>
-                <path d="M46 56 Q50 62 54 56" stroke="#DAA520" stroke-width="1.8" fill="none"/>
-                <path d="M25 68 Q20 75 18 70" stroke="#DAA520" stroke-width="2" fill="none"/>
-                <path d="M75 68 Q80 75 82 70" stroke="#DAA520" stroke-width="2" fill="none"/>
-            </svg>
-        </div>
-        <div class="cat cat-5">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#FF6347" stroke="#CC4030" stroke-width="2"/>
-                <circle cx="50" cy="35" r="22" fill="#FF6347" stroke="#CC4030" stroke-width="2"/>
-                <polygon points="35,20 28,5 40,15" fill="#FF6347" stroke="#CC4030" stroke-width="1.5"/>
-                <polygon points="65,20 72,5 60,15" fill="#FF6347" stroke="#CC4030" stroke-width="1.5"/>
-                <circle cx="41" cy="33" r="3.5" fill="#fff"/>
-                <circle cx="59" cy="33" r="3.5" fill="#fff"/>
-                <circle cx="42" cy="33" r="1.8" fill="#333"/>
-                <circle cx="60" cy="33" r="1.8" fill="#333"/>
-                <ellipse cx="50" cy="45" rx="6" ry="4" fill="#FFB6C1"/>
-                <path d="M47 55 Q50 60 53 55" stroke="#CC4030" stroke-width="2" fill="none"/>
-                <circle cx="30" cy="70" r="5" fill="#FF6347"/>
-                <circle cx="70" cy="70" r="5" fill="#FF6347"/>
-            </svg>
-        </div>
-        <div class="cat cat-6">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#9B59B6" stroke="#7D3C98" stroke-width="2"/>
-                <circle cx="50" cy="35" r="22" fill="#9B59B6" stroke="#7D3C98" stroke-width="2"/>
-                <polygon points="35,20 28,5 40,15" fill="#9B59B6" stroke="#7D3C98" stroke-width="1.5"/>
-                <polygon points="65,20 72,5 60,15" fill="#9B59B6" stroke="#7D3C98" stroke-width="1.5"/>
-                <circle cx="40" cy="33" r="4" fill="#2c1a3a"/>
-                <circle cx="60" cy="33" r="4" fill="#2c1a3a"/>
-                <ellipse cx="50" cy="45" rx="8" ry="5" fill="#D2B4DE"/>
-                <path d="M45 55 Q50 62 55 55" stroke="#7D3C98" stroke-width="2" fill="none"/>
-                <path d="M32 72 L38 68" stroke="#7D3C98" stroke-width="2.5"/>
-                <path d="M68 72 L62 68" stroke="#7D3C98" stroke-width="2.5"/>
-            </svg>
-        </div>
-        <div class="cat cat-7">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#87CEEB" stroke="#4682B4" stroke-width="2"/>
-                <circle cx="50" cy="35" r="22" fill="#87CEEB" stroke="#4682B4" stroke-width="2"/>
-                <polygon points="35,20 28,5 40,15" fill="#87CEEB" stroke="#4682B4" stroke-width="1.5"/>
-                <polygon points="65,20 72,5 60,15" fill="#87CEEB" stroke="#4682B4" stroke-width="1.5"/>
-                <circle cx="41" cy="33" r="3.5" fill="#333"/>
-                <circle cx="59" cy="33" r="3.5" fill="#333"/>
-                <ellipse cx="50" cy="45" rx="7" ry="5" fill="#FFB6C1"/>
-                <path d="M46 55 Q50 61 54 55" stroke="#4682B4" stroke-width="2" fill="none"/>
-                <ellipse cx="32" cy="70" rx="5" ry="6" fill="#87CEEB"/>
-                <ellipse cx="68" cy="70" rx="5" ry="6" fill="#87CEEB"/>
-            </svg>
-        </div>
-        <div class="cat cat-8">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="65" rx="30" ry="25" fill="#FFB6C1" stroke="#FF69B4" stroke-width="2"/>
-                <circle cx="50" cy="35" r="22" fill="#FFB6C1" stroke="#FF69B4" stroke-width="2"/>
-                <polygon points="35,20 28,5 40,15" fill="#FFB6C1" stroke="#FF69B4" stroke-width="1.5"/>
-                <polygon points="65,20 72,5 60,15" fill="#FFB6C1" stroke="#FF69B4" stroke-width="1.5"/>
-                <circle cx="40" cy="33" r="4" fill="#8B4513"/>
-                <circle cx="60" cy="33" r="4" fill="#8B4513"/>
-                <ellipse cx="50" cy="44" rx="6" ry="4" fill="#FFFFFF"/>
-                <path d="M46 54 Q50 60 54 54" stroke="#FF69B4" stroke-width="2" fill="none"/>
-                <circle cx="35" cy="72" r="4" fill="#FFB6C1"/>
-                <circle cx="65" cy="72" r="4" fill="#FFB6C1"/>
-            </svg>
+        <div class="surprises-container">
+            <!-- Surprise 1: Love Quote -->
+            <div class="surprise-card" data-surprise="1">
+                <div class="card-front">
+                    <div class="question-mark">?</div>
+                    <div class="card-label">Click to reveal</div>
+                </div>
+                <div class="card-back">
+                    <div class="surprise-emoji">💌</div>
+                    <div class="surprise-text quote-text">"You make my world<br>beautiful every day"</div>
+                </div>
+            </div>
+
+            <!-- Surprise 2: Heart Promise -->
+            <div class="surprise-card" data-surprise="2">
+                <div class="card-front">
+                    <div class="question-mark">?</div>
+                    <div class="card-label">Click to reveal</div>
+                </div>
+                <div class="card-back">
+                    <div class="surprise-emoji floating-heart">💖</div>
+                    <div class="surprise-text">Forever & Always<br>By your side</div>
+                </div>
+            </div>
+
+            <!-- Surprise 3: Sparkle Wish -->
+            <div class="surprise-card" data-surprise="3">
+                <div class="card-front">
+                    <div class="question-mark">?</div>
+                    <div class="card-label">Click to reveal</div>
+                </div>
+                <div class="card-back">
+                    <div class="surprise-emoji sparkle">✨🌟✨</div>
+                    <div class="surprise-text">May all your wishes<br>come true today</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -569,11 +639,11 @@
         let isPaused = false;
         let animationFrameId = null;
         let isScrolling = true;
-        let scrollSpeed = 0.18; // HALF the previous speed (0.35 -> 0.18)
+        let scrollSpeed = 0.18;
         
         let maxScrollPercent = 0;
 
-        // Touch handling - HOLD to pause, RELEASE to resume
+        // Touch handling
         let isHolding = false;
         let holdTimeout = null;
 
@@ -673,7 +743,6 @@
             function scrollStep() {
                 if (!isScrolling) return;
                 
-                // Check if paused by hold
                 if (isHolding || isPaused) {
                     animationFrameId = requestAnimationFrame(scrollStep);
                     return;
@@ -701,7 +770,6 @@
             letterContent.style.transform = `translateY(${scrollPosition}%)`;
         }
         
-        // HOLD = PAUSE, RELEASE = RESUME
         function startHold() {
             if (!isScrolling) return;
             isHolding = true;
@@ -728,13 +796,23 @@
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             touchIndicator.style.opacity = '0';
             
+            // Reduced delay from 300ms to 150ms (half)
             setTimeout(() => {
                 startCelebration();
-            }, 300);
+            }, 150);
         }
         
         function startCelebration() {
             celebrationOverlay.classList.add('active');
+            
+            // Animate cards entrance with staggered delays
+            const cards = document.querySelectorAll('.surprise-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0) rotateY(0deg)';
+                }, index * 200);
+            });
             
             // Create confetti and popper effects
             for (let i = 0; i < 200; i++) {
@@ -743,14 +821,14 @@
                 }, i * 15);
             }
             
-            // Create popper bursts at different positions
-            for (let burst = 0; burst < 12; burst++) {
+            // Create popper bursts
+            for (let burst = 0; burst < 15; burst++) {
                 setTimeout(() => {
                     createPopperBurst();
-                }, burst * 200);
+                }, burst * 150);
             }
             
-            // Continuous confetti for 4 seconds
+            // Continuous confetti
             let confettiInterval = setInterval(() => {
                 for (let i = 0; i < 15; i++) {
                     createConfetti();
@@ -759,7 +837,19 @@
             
             setTimeout(() => {
                 clearInterval(confettiInterval);
-            }, 4500);
+            }, 5000);
+            
+            // Add click handlers for surprise cards
+            cards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!card.classList.contains('revealed')) {
+                        card.classList.add('revealed');
+                        // Create mini celebration when card is revealed
+                        createMiniPopper(card);
+                    }
+                });
+            });
         }
         
         function createConfetti() {
@@ -804,19 +894,45 @@
             }
         }
         
-        // Touch event handlers - HOLD to pause, RELEASE to resume
+        function createMiniPopper(element) {
+            const rect = element.getBoundingClientRect();
+            const centerX = (rect.left + rect.width / 2) / window.innerWidth * 100;
+            const centerY = (rect.top + rect.height / 2) / window.innerHeight * 100;
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'popper-particle';
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 40 + Math.random() * 60;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 30;
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                particle.style.left = centerX + '%';
+                particle.style.top = centerY + '%';
+                particle.style.background = `hsl(${Math.random() * 360}, 85%, 65%)`;
+                celebrationOverlay.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 800);
+            }
+        }
+        
+        // Touch event handlers
         function handleTouchStart(e) {
             e.preventDefault();
             startHold();
-            // Also track for long press
-            holdTimeout = setTimeout(() => {
-                // Already paused via startHold
-            }, 100);
+            holdTimeout = setTimeout(() => {}, 100);
         }
         
         function handleTouchEnd(e) {
             clearTimeout(holdTimeout);
             endHold();
+        }
+        
+        function handleTouchMove(e) {
+            e.preventDefault();
         }
         
         function handleMouseDown(e) {
@@ -830,25 +946,16 @@
             endHold();
         }
         
-        // Handle touch move - if user moves too much, still consider as holding
-        function handleTouchMove(e) {
-            e.preventDefault();
-            // Keep holding state active
-        }
-        
-        // Attach event listeners for proper hold-to-pause behavior
         scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
         scrollContainer.addEventListener('touchend', handleTouchEnd);
         scrollContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
         scrollContainer.addEventListener('mousedown', handleMouseDown);
         window.addEventListener('mouseup', handleMouseUp);
         
-        // Disable text selection and context menu
         letterContent.style.userSelect = 'none';
         letterContent.style.webkitUserSelect = 'none';
         scrollContainer.addEventListener('contextmenu', (e) => e.preventDefault());
         
-        // Handle window resize
         window.addEventListener('resize', () => {
             if (letterStage.classList.contains('active') && isScrolling) {
                 calculateMaxScroll();
